@@ -10,6 +10,7 @@ import 'auth/login.dart';
 
 void main() {
   // RW rw = RW('ws://localhost:14539');
+  // RW rw = RW('ws://10.232.211.118:14539');
   RW rw = RW('ws://45.55.80.161:14539');
   runApp(MyApp(rw));
 }
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: MyNavigator(rw),
+      home: SafeArea(child: MyNavigator(rw)),
     );
   }
 }

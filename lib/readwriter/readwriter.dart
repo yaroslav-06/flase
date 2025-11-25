@@ -58,7 +58,7 @@ class RW {
   late Stream<Request> _errorMessages, _data;
 
   _onData(Request data) {
-    print("data: ${data.data}");
+    print("data: ${data.data}, rq: ${data.error}, ${data.requestType}");
   }
   _onError(Request data) {
     print("error: ${data.error}");

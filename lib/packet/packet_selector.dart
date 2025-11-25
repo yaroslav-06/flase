@@ -21,6 +21,7 @@ class _PacketSelectorState extends State<PacketSelector> {
   String? err;
 
   void onErrorRecieved(dynamic error) {
+    err = error;
     setState(() {
       print("recieved error");
       err = error;
