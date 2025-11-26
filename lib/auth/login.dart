@@ -38,37 +38,53 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 200,
-              child: TextField(
-                controller: usernameTEC,
-                decoration: InputDecoration(
-                  hintText: "username",
-                ),
-              ),
+      body: Column(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: TextButton(
+              onPressed: (){
+                widget.user.getRW().resetUrl();
+                widget.user.getRW().pageUpdate();
+              },
+              child: Text("change url")
             ),
-            SizedBox(
-              width: 200,
-              child: TextField(
-                controller: passTEC,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "password",
-                  errorText: err,
-                  errorMaxLines: 3,
-                ),
-                onSubmitted: (e) => submit(),
-              ),
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: usernameTEC,
+                      decoration: InputDecoration(
+                        hintText: "username",
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      controller: passTEC,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        hintText: "password",
+                        errorText: err,
+                        errorMaxLines: 3,
+                      ),
+                      onSubmitted: (e) => submit(),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: submit,
+                    child: Text("login"),
+                  )
+              ]),
             ),
-            TextButton(
-              onPressed: submit,
-              child: Text("login"),
-            )
-        ]),
+          ),
+        ],
       ),
     );
   }

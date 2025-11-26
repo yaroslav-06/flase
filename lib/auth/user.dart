@@ -11,13 +11,8 @@ class User {
   bool showPacket = false;
   PacketCreatorInfo? packetInfo;
   bool _newPacketHandlerRunning = false, _creatingPacket = false;
-  Function pageUpdate = (){};
 
   User(RW rw) : _rw = rw;
-
-  void setPageUpdate(Function pageUpd){
-    pageUpdate = pageUpd;
-  }
 
   bool isLoggedIn() {
     return username != null;
@@ -46,7 +41,7 @@ class User {
       .firstWhere((val) => val.isSuccessful())
       .then((val) {
         username = usrn;
-        pageUpdate();
+        _rw.pageUpdate();
     });
   }
 
@@ -56,7 +51,7 @@ class User {
     _rw.getRequestStream('auth')
       .firstWhere((val) => val.isSuccessful())
       .then((val) {
-        pageUpdate();
+        _rw.pageUpdate();
     });
   }
 
@@ -64,7 +59,7 @@ class User {
     showPacket = false;
     print("remove packet");
     // print("is packet opened: $showPacket");
-    pageUpdate();
+    _rw.pageUpdate();
   }
 
   void handleNewPacket() {
@@ -76,7 +71,7 @@ class User {
       }else{
         showPacket = true;
       } 
-      pageUpdate();
+      _rw.pageUpdate();
     });
   }
 
@@ -90,12 +85,12 @@ class User {
 
   void createPacket(Map<String, dynamic> packetData){
     _rw.send("packet creator", packetData);
-    _rw.getRequestStream("packet creator").listen((val) => print("req stream: ${val}"));
+    _rw.getRequestStream("packet creator").listen((val) => print("req stream: $val"));
   }
 
   void requestPacketCreation(String name) {
     _creatingPacket = true;
     packetInfo = PacketCreatorInfo(packetName: name);
-    pageUpdate();
+    _rw.pageUpdate();
   }
 }

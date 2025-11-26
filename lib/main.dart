@@ -2,16 +2,20 @@ import 'package:flase/packet/packet_creator.dart';
 import 'package:flase/packet/packet_page.dart';
 import 'package:flase/packet/packet_selector.dart';
 import 'package:flase/pages/error_page.dart';
+import 'package:flase/pages/network_error_page.dart';
+import 'package:flase/readwriter/url_chooser.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth/user.dart';
 import 'readwriter/readwriter.dart';
 import 'auth/login.dart';
 
-void main() {
-  // RW rw = RW('ws://localhost:14539');
+void main() async {
+  String? url = await SharedPreferencesAsync().getString("url");
+  RW rw = RW(url ?? "ws://localhost:14539");
   // RW rw = RW('ws://10.232.211.118:14539');
-  RW rw = RW('ws://45.55.80.161:14539');
+  // RW rw = RW('ws://45.55.80.161:14539');
   runApp(MyApp(rw));
 }
 
@@ -41,8 +45,18 @@ class MyNavigator extends StatefulWidget {
 
 class _MyNavigatorState extends State<MyNavigator> {
   @override
+  void dispose() {
+    widget.rw.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
-    widget.user.setPageUpdate(()=>setState((){print("main page update");}));
+    widget.rw.setPageUpdate(()=>setState((){print("main page update");}));
+    if(widget.rw.getUrl() == null){
+      return Material(
+        child: UrlChooser(rw: widget.rw)
+      );
+    }
     return FutureBuilder(
       future: widget.rw.ready,
       builder: (context, snapshot) {
@@ -50,7 +64,7 @@ class _MyNavigatorState extends State<MyNavigator> {
           return Scaffold(body: Center(child: CircularProgressIndicator()));
         }
         if(!snapshot.data!){
-          return ErrorPage(errorMessage: "couldn't connect to the server");
+          return NetworkErrorPage(rw: widget.rw);
         }
         return Navigator(
           pages: [
@@ -74,9 +88,7 @@ class _MyNavigatorState extends State<MyNavigator> {
             if (widget.user.creatingPacket())
               MaterialPage(
                 key: ValueKey("packet creation"),
-                child: PacketCreator(
-                  user: widget.user,
-                )
+                child: PacketCreator(user: widget.user,)
               ),
           ],
           onDidRemovePage: (page) {},

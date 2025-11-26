@@ -52,20 +52,29 @@ StreamTransformer<Request, dynamic> getError = StreamTransformer.fromHandlers(ha
 });
 
 class RW {
-  WebSocketChannel _ws;
-  late final Future<bool> ready;
+  late WebSocketChannel _ws;
+  late String? _url;
+  late Future<bool> ready;
   late StreamSplitter<Request> _requestSplitter, _dataSplitter, _errorSplitter;
   late Stream<Request> _errorMessages, _data;
+  Timer? _checkConn;
+  Function pageUpdate = (){};
+  StreamSubscription<dynamic>? connErrorStream;
+
+
+  void setUrl(String url) => _url = url;
+  void resetUrl() => _url = null;
+  String? getUrl() => _url;
+
+  void setPageUpdate(Function pageUpd){
+    pageUpdate = pageUpd;
+  }
 
   _onData(Request data) {
     print("data: ${data.data}, rq: ${data.error}, ${data.requestType}");
   }
   _onError(Request data) {
     print("error: ${data.error}");
-  }
-
-  void reconnect(String uri) {
-    _ws = WebSocketChannel.connect(Uri.parse(uri));
   }
 
   Stream<dynamic> getRequestDataStream(String request){
@@ -85,7 +94,31 @@ class RW {
       .where((val) => val.requestType == request).asBroadcastStream();
   }
 
-  RW(String uri) : _ws = WebSocketChannel.connect(Uri.parse(uri)) {
+  void _streamErrorHandling(dynamic err){
+    print("closed: $err");
+    reconnect();
+    pageUpdate();
+  }
+
+  RW(String url) {
+    setUrl(url);
+    reconnect();
+  }
+
+  send(String req, dynamic data) async {
+    return _ws.sink.add(jsonEncode({"r": req, "d": data}));
+  }
+
+  void dispose(){
+    _ws.sink.close();
+    if(_checkConn!=null) _checkConn!.cancel();
+  }
+
+  void reconnect() {
+    if(connErrorStream!=null){connErrorStream!.cancel();} 
+    if(_checkConn!=null) _checkConn!.cancel();
+
+    _ws = WebSocketChannel.connect(Uri.parse(_url!));
     ready = Future<bool>(() async {
       try {
         await _ws.ready;
@@ -97,6 +130,9 @@ class RW {
         print(e);
         return false;
       }
+      _checkConn = Timer.periodic(Duration(seconds: 1), (_){
+        if(_ws.closeReason != null) _streamErrorHandling(_ws.closeReason);
+      });
       _requestSplitter = StreamSplitter(_ws.stream.transform(toMapDynamic).transform(toRequest));
       _errorMessages = _requestSplitter.split()
         .where((val) => val.isError()).asBroadcastStream();
@@ -111,9 +147,5 @@ class RW {
       //
       return true;
     });
-  }
-
-  send(String req, dynamic data) async {
-    return _ws.sink.add(jsonEncode({"r": req, "d": data}));
   }
 }

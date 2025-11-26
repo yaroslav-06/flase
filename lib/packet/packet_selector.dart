@@ -22,6 +22,7 @@ class _PacketSelectorState extends State<PacketSelector> {
 
   void onErrorRecieved(dynamic error) {
     err = error;
+    print("recieved errro: $error");
     setState(() {
       print("recieved error");
       err = error;
@@ -29,21 +30,25 @@ class _PacketSelectorState extends State<PacketSelector> {
   }
 
   void submit(){
+    err = null;
     widget.user.getPacket(passTEC.text);
   }
 
   void create(){
+    err = null;
     widget.user.requestPacketCreation(passTEC.text);
   }
 
   @override
   void initState() {
+    print("subscribed to error stream at packet selector");
     errStreamSub = widget.user.getRW().getRequestErrorStream(PacketSelector.request).listen(onErrorRecieved);
     super.initState();
   }
 
   @override
   void dispose() {
+    print("unsubscribed from error stream at packet selector");
     if (errStreamSub != null) errStreamSub!.cancel();
     super.dispose();
   }
