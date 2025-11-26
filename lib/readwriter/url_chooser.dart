@@ -11,8 +11,9 @@ class UrlChooser extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController ctrl = TextEditingController(text: rw.getUrl());
     Future<void> save() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       print("saving0: ${ctrl.text}");
-      await SharedPreferencesAsync().setString('url', ctrl.text);
+      await prefs.setString('url', ctrl.text);
       print("saving: ${ctrl.text}");
       rw.setUrl(ctrl.text);
       rw.reconnect();

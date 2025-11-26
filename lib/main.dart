@@ -1,7 +1,6 @@
 import 'package:flase/packet/packet_creator.dart';
 import 'package:flase/packet/packet_page.dart';
 import 'package:flase/packet/packet_selector.dart';
-import 'package:flase/pages/error_page.dart';
 import 'package:flase/pages/network_error_page.dart';
 import 'package:flase/readwriter/url_chooser.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,9 @@ import 'readwriter/readwriter.dart';
 import 'auth/login.dart';
 
 void main() async {
-  String? url = await SharedPreferencesAsync().getString("url");
+  WidgetsFlutterBinding.ensureInitialized();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? url = prefs.getString("url");
   RW rw = RW(url ?? "ws://localhost:14539");
   // RW rw = RW('ws://10.232.211.118:14539');
   // RW rw = RW('ws://45.55.80.161:14539');
