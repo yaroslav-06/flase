@@ -14,8 +14,6 @@ import 'auth/login.dart';
 void main() async {
   String? url = await SharedPreferencesAsync().getString("url");
   RW rw = RW(url ?? "ws://localhost:14539");
-  // RW rw = RW('ws://10.232.211.118:14539');
-  // RW rw = RW('ws://45.55.80.161:14539');
   runApp(MyApp(rw));
 }
 
