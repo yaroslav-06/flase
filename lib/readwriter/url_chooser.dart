@@ -22,7 +22,7 @@ class UrlChooser extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          Text("enter server url or ip (for example: ws://10.232.211.118:14539)"),
+          Text("enter server url or ip (for example: ws://0.0.0.0:14539)"),
           TextField(
             controller: ctrl,
             onSubmitted: (_) => save(),

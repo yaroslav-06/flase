@@ -15,8 +15,6 @@ void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? url = prefs.getString("url");
   RW rw = RW(url ?? "ws://localhost:14539");
-  // RW rw = RW('ws://10.232.211.118:14539');
-  // RW rw = RW('ws://45.55.80.161:14539');
   runApp(MyApp(rw));
 }
 

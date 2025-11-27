@@ -1,16 +1,18 @@
-# flase
+# Flase app
 
-A new Flutter project.
+The front-end part of [https://github.com/yaroslav-06/flase_api](https://github.com/yaroslav-06/flase_api).
 
-## Getting Started
+Supports: **Android**, **Web**(not recommended)
 
-This project is a starting point for a Flutter application.
+No setup required, just install the apk and press change url, at the initial page.\
+There enter your server ip in form: 
+```txt
+ws://<your server's ip>:14539
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+But if you want to recompile on your own, setup flutter for android, and run:
+```bash
+git clone https://github.com/yaroslav-06/flase.git
+cd flase
+flutter run
+```
